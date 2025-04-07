@@ -1,0 +1,76 @@
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.transport.ProxyProvider;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+import java.io.File;
+
+public class OctaneClient {
+    private final WebClient webClient;
+    private final String octaneUrl = "https://<octane-server>";
+    private String authCookie;
+
+    public OctaneClient() throws Exception {
+        // Configure SSL with client certificates
+        SslContext sslContext = SslContextBuilder.forClient()
+                .keyManager(new File("path/to/client-cert.pem"), new File("path/to/client-key.pem")) // Provide the client certificate and key
+                .trustManager(new File("path/to/ca-cert.pem")) // Provide the CA certificate
+                .build();
+
+        // Configure proxy
+        HttpClient httpClient = HttpClient.create()
+                .proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP)
+                                     .host("proxy-host") // Replace with your proxy host
+                                     .port(8080))        // Replace with your proxy port
+                .secure(sslSpec -> sslSpec.sslContext(sslContext)); // Attach the SSL context
+
+        // Build WebClient with the configured HttpClient
+        this.webClient = WebClient.builder()
+                .baseUrl(octaneUrl)
+                .clientConnector(new ReactorClientHttpConnector(httpClient))
+                .build();
+    }
+
+    public void authenticate(String clientId, String clientSecret) {
+        String authEndpoint = "/authentication/sign_in";
+
+        // Make the POST request to authenticate
+        webClient.post()
+                .uri(authEndpoint)
+                .bodyValue(String.format("{\"client_id\": \"%s\", \"client_secret\": \"%s\"}", clientId, clientSecret))
+                .exchangeToMono(response -> {
+                    if (response.cookies().containsKey("LWSSO_COOKIE_KEY")) {
+                        authCookie = response.cookies().getFirst("LWSSO_COOKIE_KEY").getValue();
+                        System.out.println("Authenticated successfully! Cookie: " + authCookie);
+                    }
+                    return Mono.just("Authentication successful!");
+                }).block();
+    }
+
+    public void fetchWorkspaces(String sharedSpaceId) {
+        if (authCookie == null) {
+            System.err.println("Error: Not authenticated. Please authenticate first.");
+            return;
+        }
+
+        String workspaceEndpoint = "/api/shared_spaces/" + sharedSpaceId + "/workspaces";
+
+        webClient.get()
+                .uri(workspaceEndpoint)
+                .header("Cookie", "LWSSO_COOKIE_KEY=" + authCookie) // Attach the authentication cookie
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnError(error -> System.err.println("Failed to fetch workspaces: " + error.getMessage()))
+                .subscribe(workspaces -> {
+                    System.out.println("Workspaces: " + workspaces);
+                });
+    }
+
+    public static void main(String[] args) throws Exception {
+        OctaneClient client = new OctaneClient();
+        client.authenticate("<your_client_id>", "<your_client_secret>");
+        client.fetchWorkspaces("<shared_space_id>");
+    }
+}
