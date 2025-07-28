@@ -1,0 +1,332 @@
+openapi: 3.0.3
+info:
+  title: Octane Academy
+  description: 
+  version: 1.0.0
+  contact: {}
+servers:
+  - url: "https://postman-echo.com"
+paths:
+  /:
+    post:
+      tags:
+        - "export | import"
+      summary: export defects into excel
+      description: 
+      operationId: post
+      parameters:
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          schema:
+            type: string
+          example: "{{tech_preview_flag}}"
+        - name: hpeclienttype
+          in: header
+          schema:
+            type: string
+          example: IT_PRIVATE
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                document_type: EXCEL
+                timezone: "UTC+02:00"
+                file_name: Octane_backlog.OctaneAcademy.defects
+                report_entries:
+                  - entity_name: work_item
+                    subtypes:
+                      - defect
+                    fields:
+                      - id
+                      - has_attachments
+                      - name
+                      - description
+                      - priority
+                      - severity
+                      - phase
+                      - detected_by
+                      - detected_in_release
+                      - release
+                      - owner
+                      - last_modified
+                      - milestone
+                      - taxonomies
+                      - subtype
+                    include_attachments: NO_ATTACHMENTS
+                    filter: "\"(id IN {{defectIds_export}})\""
+                purpose: EXPORT_FOR_IMPORT
+                is_export_for_create_import: false
+    delete:
+      tags:
+        - requirement_documents
+      summary: Delete multiple requirement documents by given condition (greater than date)
+      description: 
+      operationId: delete
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+          example: "\"creation_time GT^2020-12-01T00:00:00Z^\""
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          schema:
+            type: string
+          example: "{{tech_preview_flag}}"
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+    get:
+      tags:
+        - "export | import"
+      summary: Export requirement as document Copy
+      description: 
+      operationId: get
+      parameters:
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          schema:
+            type: string
+          example: "{{tech_preview_flag}}"
+        - name: hpeclienttype
+          in: header
+          schema:
+            type: string
+          example: IT_PRIVATE
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+    put:
+      tags:
+        - external-actions
+      summary: Add external-entity-actions
+      description: 
+      operationId: put
+      parameters:
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          schema:
+            type: string
+          example: "{{tech_preview_flag}}"
+        - name: HPECLIENTTYPE
+          in: header
+          schema:
+            type: string
+          example: IT_PRIVATE
+      responses:
+        200:
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                example: {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                data:
+                  - name: alieninvasion
+                    title: Easter Alien Invasion
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: system
+                    url: "http://cykod.github.io/AlienInvasion/"
+                    single_entity: false
+                  - name: duckhunt
+                    title: Easter Duck Hunt
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: expert-star
+                    url: "https://duckhuntjs.com/"
+                    single_entity: false
+                  - name: ski
+                    title: Easter Ski
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: merge
+                    url: "http://basicallydan.github.io/skifree.js/"
+                    single_entity: false
+                  - name: snake
+                    title: Easter Coffee Snake
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: refresh
+                    url: "http://dommmel.github.io/coffee-snake/"
+                    single_entity: false
+                  - name: sorades
+                    title: Easter Sorades 13K
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: check
+                    url: "http://maettig.com/code/canvas/starship-sorades-13k/"
+                    single_entity: false
+                  - name: survivor
+                    title: Easter Survivor
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: children
+                    url: "http://www.schillmania.com/survivor/"
+                    single_entity: false
+                  - name: url
+                    title: open URL
+                    entity_type:
+                      - defect
+                    views:
+                      - list
+                      - details
+                    icon: system
+                    url: "http://{entity.jira_key_udf}"
+                    single_entity: true
+components:
+  schemas: {}
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    digestAuth:
+      type: http
+      scheme: digest
+tags:
+  - name: authentication
+    description: 
+  - name: backlog Items
+    description: 
+  - name: epics
+    description: 
+  - name: features
+    description: 
+  - name: stories
+    description: 
+  - name: quality_stories
+    description: 
+  - name: defects
+    description: 
+  - name: tasks
+    description: 
+  - name: tests
+    description: 
+  - name: manual_tests
+    description: 
+  - name: script
+    description: 
+  - name: gherkin_tests
+    description: 
+  - name: automated_tests
+    description: 
+  - name: test_suites
+    description: 
+  - name: test_suite_link_to_tests
+    description: 
+  - name: test_versions
+    description: 
+  - name: application_modules
+    description: 
+  - name: management
+    description: 
+  - name: releases
+    description: 
+  - name: sprints
+    description: 
+  - name: milestones
+    description: 
+  - name: objectives
+    description: 
+  - name: programs
+    description: 
+  - name: processes
+    description: 
+  - name: runs
+    description: 
+  - name: suite_runs
+    description: 
+  - name: manual_runs
+    description: 
+  - name: automated_runs
+    description: 
+  - name: gherkin_automated_runs
+    description: 
+  - name: run_steps
+    description: 
+  - name: pipelines
+    description: 
+  - name: ci_servers
+    description: 
+  - name: builds
+    description: 
+  - name: scm
+    description: 
+  - name: testresults
+    description: 
+  - name: vulnerabilities
+    description: 
+  - name: requirements
+    description: 
+  - name: requirement_folders
+    description: 
+  - name: requirement_documents
+    description: 
+  - name: comments
+    description: 
+  - name: attachments
+    description: 
+  - name: environments
+    description: 
+  - name: roles
+    description: 
+  - name: users
+    description: 
+  - name: list_nodes
+    description: 
+  - name: history
+    description: 
+  - name: workspaces
+    description: 
+  - name: business_rules
+    description: 
+  - name: external-actions
+    description: 
+  - name: "export | import"
+    description: 
