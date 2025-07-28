@@ -1,20 +1,24 @@
 openapi: 3.0.0
 info:
-  title: Octane Academy
+  title: Octane REST API Collections
   version: 1.0.0
   description: ''
 servers:
-  - url: '{{url}}'
+  - url: 'https://almoctane-ams.saas.microfocus.com'
 paths:
   /authentication/sign_in:
     parameters: []
     post:
+      tags:
+        - "authentication"    
       summary: Sign in with client_id and secret
+      security:
+        - basicAuth: []
       responses: 
         '200':
           description: OK
         '401':
-          description: Login Failed
+          description: Unauthorized
       requestBody:
         content:
           application/json:
@@ -28,14 +32,18 @@ paths:
   /authentication/sign_out:
     parameters: []
     post:
+      tags:
+        - "authentication"     
       summary: Sign-out
       responses: 
         '200':
           description: OK
         '401':
-          description: Login Failed
+          description: Unauthorized
   /api/shared_spaces/{shared_space}/workspaces/{workspace}/epics:
     get:
+      tags:
+        - "backlog Items"  
       summary: Get all epics
       parameters:
         - name: shared_space
@@ -60,6 +68,28 @@ paths:
           example: true
           schema:
             type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Successful retrieval of epics
@@ -80,9 +110,10 @@ paths:
           description: Bad request
         '401':
           description: Unauthorized
-
   /api/shared_spaces/{shared_space}/workspaces/{workspace}/features:
     get:
+      tags:
+        - "backlog Items" 
       summary: Get all features
       parameters:
         - name: shared_space
@@ -107,6 +138,28 @@ paths:
           example: true
           schema:
             type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Successful retrieval of features
@@ -127,9 +180,10 @@ paths:
           description: Bad request
         '401':
           description: Unauthorized
-
   /api/shared_spaces/{shared_space}/workspaces/{workspace}/stories:
     get:
+      tags:
+        - "backlog Items" 
       summary: Get all user stories
       parameters:
         - name: shared_space
@@ -154,6 +208,28 @@ paths:
           example: true
           schema:
             type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: Successful retrieval of user stories
@@ -175,35 +251,159 @@ paths:
         '401':
           description: Unauthorized
 
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/quality_stories:
-    parameters: []
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/quality_stories:
     get:
+      tags:
+        - "backlog Items" 
       summary: Get all quality stories
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/defects:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of quality stories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/defects:
     get:
+      tags:
+        - "backlog Items" 
       summary: Get all defects
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/defects/{{defect_id}}:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of defects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    severity:
+                      type: string
+                    status:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/defects/{defect_id}:
     get:
-      summary: Get defect by Id
+      tags:
+        - "backlog Items" 
+      summary: Get defect by ID
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: defect_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
@@ -213,27 +413,138 @@ paths:
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/tasks:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Defect retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+                  severity:
+                    type: string
+                  status:
+                    type: string
+                  analysis_udf:
+                    type: string
+        '400':
+          description: Bad request
+        '404':
+          description: Defect not found
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/tasks:
     get:
+      tags:
+        - "backlog Items" 
       summary: Get all tasks
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
           example: name
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/work_items:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful retrieval of tasks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    status:
+                      type: string
+                    owner:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/work_items:
     get:
+      tags:
+        - "backlog Items" 
       summary: Get all work items by subtype
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
@@ -243,57 +554,282 @@ paths:
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/tests/{{manual_test_id}}/script:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Work items retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    subtype:
+                      type: string
+                    name:
+                      type: string
+                    phase:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/tests/{manual_test_id}/script:
     get:
+      tags:
+        - "tests" 
       summary: Get test script
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: manual_test_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/manual_tests:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Test script retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  script:
+                    type: string
+                  last_modified:
+                    type: string
+                    format: date-time
+        '400':
+          description: Bad request
+        '404':
+          description: Test not found
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/manual_tests:
     get:
+      tags:
+        - "tests" 
       summary: Get all manual tests
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
-          example: name,description, covered_requirement
+          example: name,description,covered_requirement
           schema:
             type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/tests/{{gherkin_test_id}}/script:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Manual tests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    covered_requirement:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/tests/{gherkin_test_id}/script:
     get:
-      summary: Get gherkin test script
+      tags:
+        - "tests" 
+      summary: Get Gherkin test script
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: gherkin_test_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/gherkin_tests:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gherkin test script retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  script:
+                    type: string
+                  last_modified:
+                    type: string
+                    format: date-time
+        '400':
+          description: Bad request
+        '404':
+          description: Test not found
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/gherkin_tests:
     get:
-      summary: Get all gherkin tests
+      tags:
+        - "tests" 
+      summary: Get all Gherkin tests
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
@@ -303,15 +839,67 @@ paths:
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/automated_tests:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Gherkin tests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/automated_tests:
     get:
+      tags:
+        - "tests" 
       summary: Get all automated tests
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
@@ -321,15 +909,67 @@ paths:
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/test_suite_link_to_tests:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Automated tests retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/test_suite_link_to_tests:
     get:
+      tags:
+        - "test_suites" 
       summary: Get all tests within a test suite
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
@@ -339,21 +979,81 @@ paths:
         - name: query
           in: query
           required: false
-          example: '"test_suite EQ {id EQ {{test_suite_id}}}"'
+          example: '"test_suite EQ {id EQ 12345}"'
           schema:
             type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/test_suites:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Tests linked to the test suite retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    test_suite:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                    test:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/test_suites:
     get:
+      tags:
+        - "test_suites" 
       summary: Get all test suites
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
@@ -363,832 +1063,2433 @@ paths:
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/test_versions:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Test suites retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/test_versions:
     get:
-      summary: Get all test version with all system fields
+      tags:
+        - "test_versions" 
+      summary: Get all test versions with all system fields
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
-          example: >-
-            client_lock_stamp,comment,creation_time,creator,id,is_external,last_modified,name,releases,script,test,version_stamp
+          example: client_lock_stamp,comment,creation_time,creator,id,is_external,last_modified,name,releases,script,test,version_stamp
           schema:
             type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/tests:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Test versions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    version_stamp:
+                      type: integer
+                    creation_time:
+                      type: string
+                      format: date-time
+                    last_modified:
+                      type: string
+                      format: date-time
+                    creator:
+                      type: string
+                    comment:
+                      type: string
+                    client_lock_stamp:
+                      type: integer
+                    is_external:
+                      type: boolean
+                    releases:
+                      type: array
+                      items:
+                        type: string
+                    script:
+                      type: string
+                    test:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/tests:
     get:
+      tags:
+        - "tests" 
       summary: Get all tests
+      description: Retrieve all test entities from the specified workspace within a shared space. Supports optional field selection and tech preview features.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
-          example: subtype, name
+          description: Comma-separated list of fields to include in the response
+          example: subtype,name
           schema:
             type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/application_modules:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of tests
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    subtype:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/application_modules:
     get:
-      summary: Delete all application modules by parents name
+      tags:
+        - "application_modules" 
+      summary: Get application modules filtered by parent name
+      description: Retrieve application modules from the specified workspace, optionally filtered by parent name using a query expression.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: query
           in: query
           required: false
+          description: Query expression to filter modules by parent name
           example: '"parent EQ {name EQ ^Procure to Pay *^}"'
           schema:
             type: string
         - name: fields
           in: query
           required: false
+          description: Comma-separated list of fields to include in the response
           example: name,description
           schema:
             type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/releases:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of application modules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    parent:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/releases:
     get:
+      tags:
+        - "management" 
       summary: Get all releases
+      description: Retrieve all release entities from the specified workspace within a shared space.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/sprints:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of releases
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    start_date:
+                      type: string
+                      format: date
+                    end_date:
+                      type: string
+                      format: date
+                    status:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/sprints:
     get:
+      tags:
+        - "management" 
       summary: Get all sprints
+      description: Retrieve all sprint entities from the specified workspace within a shared space.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          description: Optional tech preview flag
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/milestones:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0      
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of sprints
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    start_date:
+                      type: string
+                      format: date
+                    end_date:
+                      type: string
+                      format: date
+                    release:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/milestones:
     get:
+      tags:
+        - "management" 
       summary: Get all milestones
+      description: Retrieve all milestone entities from the specified workspace within a shared space.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          description: Optional tech preview flag
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/planning_info:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of milestones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    date:
+                      type: string
+                      format: date
+                    description:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/planning_info:
     get:
+      tags:
+        - "management" 
       summary: Get all objectives
+      description: Retrieve all planning objectives from the specified workspace within a shared space.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          description: Optional tech preview flag
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/programs:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of planning objectives
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    status:
+                      type: string
+                    owner:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/programs:
     get:
+      tags:
+        - "management" 
       summary: Get all programs
+      description: Retrieve all program entities from the specified workspace within a shared space. Supports optional field selection and tech preview features.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: fields
           in: query
           required: false
+          description: Comma-separated list of fields to include in the response
           example: client_lock_stamp,creation_time,id,last_modified,name,version_stamp
           schema:
             type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          description: Optional tech preview flag
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/processes:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of programs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    creation_time:
+                      type: string
+                      format: date-time
+                    last_modified:
+                      type: string
+                      format: date-time
+                    client_lock_stamp:
+                      type: integer
+                    version_stamp:
+                      type: integer
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Workspace or shared space not found
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/processes:
     get:
+      tags:
+        - "management" 
       summary: Get all processes
+      description: Retrieve all process entities from the specified workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          description: ID of the shared space
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          description: ID of the workspace
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          description: Optional tech preview flag
+          example: true
           schema:
             type: string
         - name: HPECLIENTTYPE
           in: header
           required: false
+          description: Client type identifier
           example: HPE_MQM_UI
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/suite_run:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of processes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/suite_run:
     get:
+      tags:
+        - "runs" 
       summary: Get all suite runs
+      description: Retrieve all suite run entities from the specified workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/manual_runs:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of suite runs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    status:
+                      type: string
+                    started:
+                      type: string
+                      format: date-time
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/manual_runs:
     get:
+      tags:
+        - "runs" 
       summary: Get all manual runs
+      description: Retrieve all manual test run entities from the specified workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/automated_runs:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of manual runs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    test_id:
+                      type: string
+                    status:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/automated_runs:
     get:
+      tags:
+        - "runs" 
       summary: Get all automated runs
+      description: Retrieve all automated test run entities from the specified workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/gherkin_automated_runs:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of automated runs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    test_id:
+                      type: string
+                    status:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/gherkin_automated_runs:
     get:
-      summary: Get all gherkin auto runs
+      tags:
+        - "runs" 
+      summary: Get all Gherkin automated runs
+      description: Retrieve all Gherkin-based automated test runs from the specified workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: workspace
+          in: path
+          required: true
+          schema:
+            type: string
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          example: true
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/run_steps:
-    parameters: []
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0            
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of Gherkin automated runs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    feature:
+                      type: string
+                    status:
+                      type: string
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/run_steps:
     get:
+      tags:
+        - "runs" 
       summary: Get all run steps of a manual run
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: query
           in: query
           required: false
           example: '"run EQ {id EQ ^7005^}"'
-          schema:
-            type: string
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: description,result
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/runs:
-    parameters: []
+      responses:
+        '200': { description: Run steps retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/runs:
     get:
+      tags:
+        - "runs" 
       summary: Get all runs
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/ci_servers:
-    parameters: []
+      responses:
+        '200': { description: Runs retrieved successfully }
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_servers:
     get:
-      summary: Get all ci servers
+      tags:
+        - "pipelines" 
+      summary: Get all CI servers
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/ci_servers/configured:
-    parameters: []
+      responses:
+        '200': { description: CI servers retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_servers/configured:
     get:
-      summary: Get all ci server connected
+      tags:
+        - "pipelines" 
+      summary: Get all connected CI servers
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/pipelines:
-    parameters: []
+      responses:
+        '200': { description: Connected CI servers retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/pipelines:
     get:
+      tags:
+        - "pipelines" 
       summary: Get all pipelines
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name,author,creation_time,ci_server
-          schema:
-            type: string
-        - name: limit
-          in: query
-          required: false
-          example: '100'
-          schema:
-            type: integer
-        - name: order_by
-          in: query
-          required: false
-          example: id
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/ci_jobs:
-    parameters: []
+      responses:
+        '200': { description: Pipelines retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_jobs:
     get:
-      summary: Get ci_jobs id
+      tags:
+        - "pipelines"
+      summary: Get CI job IDs
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name
-          schema:
-            type: string
+          schema: { type: string }
         - name: HPECLIENTTYPE
           in: header
           required: false
           example: HPE_MQM_UI
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/ci_builds/2001:
-    parameters: []
+      responses:
+        '200': { description: CI jobs retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_builds/{ci_build_id}:
     get:
-      summary: Get a single ci_build
+      tags:
+        - "pipelines"
+      summary: Get a single CI build
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: ci_build_id
+          in: path
+          required: true
+          schema: { type: integer }            
         - name: fields
           in: query
           required: false
           example: name,pipeline_node,status
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/scm_commits:
-    parameters: []
+      responses:
+        '200': { description: CI build retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/scm_commits:
     get:
-      summary: Get all scm commits
+      tags:
+        - "pipelines"
+      summary: Get all SCM commits
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: query
           in: query
           required: false
           example: '"stories EQ {id EQ 6062}"'
-          schema:
-            type: string
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: ci_build
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-      responses: {}
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/scm_repositories/7001:
-    parameters: []
-    get:
-      summary: Get all scm repositories
-      parameters:
-        - name: ALM-OCTANE-TECH-PREVIEW
-          in: header
-          required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-        - name: HPECLIENTTYPE
-          in: header
-          required: false
-          example: HPE_MQM_UI
-          schema:
-            type: string
-      responses: {}
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/scm_commits/5003:
-    parameters: []
-    get:
-      summary: Get single scm commit
-      parameters:
-        - name: ALM-OCTANE-TECH-PREVIEW
-          in: header
-          required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-        - name: HPECLIENTTYPE
-          in: header
-          required: false
-          example: HPE_MQM_UI
-          schema:
-            type: string
-      responses: {}
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/test-results/10113:
-    parameters: []
-    get:
-      summary: Get pushed test status
-      parameters:
-        - name: ALM-OCTANE-TECH-PREVIEW
-          in: header
-          required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/issues:
-    parameters: []
-    get:
-      summary: Get all vulnerabilities
-      parameters:
-        - name: fields
-          in: query
-          required: false
-          example: >-
-            line,state,id,severity,tool_name,package,remote_id,primary_location_full,analysis,commits,category
-          schema:
-            type: string
+          schema: { type: string }
         - name: limit
           in: query
           required: false
-          example: '30'
+          description: Maximum number of items to return
           schema:
             type: integer
+            minimum: 1
+            default: 2000
         - name: offset
           in: query
           required: false
-          example: '0'
+          description: Number of items to skip before starting to collect the result set
           schema:
             type: integer
+            minimum: 0
+            default: 0          
         - name: order_by
           in: query
+          description: Field to sort by (e.g., id, name)
           required: false
-          example: id
           schema:
             type: string
+      responses:
+        '200': { description: SCM commits retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/scm_repositories/{scm_repository_id}:
+    get:
+      tags:
+        - "pipelines"
+      summary: Get SCM repository by ID
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: scm_repository_id
+          in: path
+          required: true
+          schema: { type: integer }            
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: HPECLIENTTYPE
+          in: header
+          required: false
+          example: HPE_MQM_UI
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
+      responses:
+        '200': { description: SCM repository retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/scm_commits/{scm_commit_id}:
+    get:
+      tags:
+        - "pipelines"
+      summary: Get single SCM commit
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: scm_commit_id
+          in: path
+          required: true
+          schema: { type: integer }            
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          required: false
+          schema: { type: string }
+        - name: HPECLIENTTYPE
+          in: header
+          required: false
+          example: HPE_MQM_UI
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200': { description: SCM commit retrieved successfully }
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/test-results/{task_id}:
+    get:
+      tags:
+        - "testresults"
+      summary: Get pushed test status usingg task id
+      description: Retrieve the status of a specific pushed test result using task id.
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: task_id
+          in: path
+          required: true
+          schema: { type: integer }            
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          required: false
+          schema: { type: string }
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200': { description: Test result status retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/issues:
+    get:
+      tags:
+        - "vulnerabilities"
+      summary: Get all vulnerabilities
+      description: Retrieve all vulnerability issues detected in the workspace.
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: fields
+          in: query
+          required: false
+          example: line,state,id,severity,tool_name,package,remote_id,primary_location_full,analysis,commits,category
+          schema: { type: string }
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          required: false
+          schema: { type: string }
         - name: hpeclienttype
           in: header
           required: false
           example: HPE_MQM_UI
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/requirement_folders:
-    parameters: []
+      responses:
+        '200': { description: Vulnerabilities retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/requirement_folders:
     get:
+      tags:
+        - "requirements"
       summary: Get all requirement folders
+      description: Retrieve all requirement folders from the workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/requirement_documents:
-    parameters: []
+      responses:
+        '200': { description: Requirement folders retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/requirement_documents:
     get:
+      tags:
+        - "requirements"
       summary: Get all requirement documents
+      description: Retrieve all requirement documents from the workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/requirements:
-    parameters: []
+      responses:
+        '200': { description: Requirement documents retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/requirements:
     get:
+      tags:
+        - "requirements"
       summary: Get all requirements (including requirement_root)
+      description: Retrieve all requirements, including root-level requirements.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/comments:
-    parameters: []
+      responses:
+        '200': { description: Requirements retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/comments:
     get:
+      tags:
+        - "comments"
       summary: Get all comments on all entities
+      description: Retrieve all comments associated with entities in the workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: owner_work_item,text,author
-          schema:
-            type: string
-        - name: order_by
-          in: query
-          required: false
-          example: author
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/attachments:
-    parameters: []
+      responses:
+        '200': { description: Comments retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/attachments:
     get:
+      tags:
+        - "attachments"
       summary: Get all attachments
+      description: Retrieve all attachments from the workspace.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name
-          schema:
-            type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/taxonomy_nodes:
-    parameters: []
+          schema: { type: string }
+      responses:
+        '200': { description: Attachments retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/taxonomy_nodes:
     get:
+      tags:
+        - "environments"
       summary: Read all Taxonomy Nodes
+      description: Retrieve all taxonomy nodes used for classification and grouping.
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
-          example: >-
-            activity_level,user_activation_status,author,category,client_lock_stamp,creation_time,id,last_modified,name,subtype,version_stamp
+          example: activity_level,user_activation_status,author,category,client_lock_stamp,creation_time,id,last_modified,name,subtype,version_stamp
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/roles:
-    parameters: []
+      responses:
+        '200': { description: Taxonomy nodes retrieved successfully }
+  /api/shared_spaces/{shared_space}/roles:
     get:
+      tags:
+        - "roles"
       summary: Get all roles
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name
-          schema:
-            type: string
-        - name: order_by
-          in: query
-          required: false
-          example: name
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspace_roles:
-    parameters: []
+      responses:
+        '200': { description: Roles retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspace_roles:
     get:
+      tags:
+        - "roles"
       summary: Get all workspace roles
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: role
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/workspace_users:
-    parameters: []
+      responses:
+        '200': { description: Workspace roles retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/workspace_users:
     get:
+      tags:
+        - "users"
       summary: Get all workspace users
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/users:
-    parameters: []
+      responses:
+        '200': { description: Workspace users retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/users:
     get:
+      tags:
+        - "users"
       summary: Get all shared space users
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: full_name
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/list_nodes:
-    parameters: []
+      responses:
+        '200': { description: Shared space users retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/list_nodes:
     get:
+      tags:
+        - "list_nodes"
       summary: Get all items from list_nodes
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/history_logs:
-    parameters: []
+      responses:
+        '200': { description: List nodes retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/history_logs:
     get:
+      tags:
+        - "history"
       summary: Get all items from history_logs
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
-          example: >-
-            id,user_name,timestamp,user_id,action,entity_type,entity_id,entity_physical_id,session_id,request_id,change_set
-          schema:
-            type: string
+          example: id,user_name,timestamp,user_id,action,entity_type,entity_id,entity_physical_id,session_id,request_id,change_set
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces:
-    parameters: []
+      responses:
+        '200': { description: History logs retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces:
     get:
+      tags:
+        - "workspaces"
       summary: Get all workspaces
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
         - name: fields
           in: query
           required: false
           example: name
-          schema:
-            type: string
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/business_rules:
-    parameters: []
-    get:
-      summary: Get all business rules
-      parameters:
-        - name: ALM-OCTANE-TECH-PREVIEW
-          in: header
-          required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-        - name: HPECLIENTTYPE
-          in: header
-          required: false
-          example: IT_PRIVATE
-          schema:
-            type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/external-entity-actions:
-    parameters: []
-    get:
-      summary: Get all external-entity-actions
-      parameters:
-        - name: ALM-OCTANE-TECH-PREVIEW
-          in: header
-          required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
-        - name: HPECLIENTTYPE
-          in: header
-          required: false
-          example: IT_PRIVATE
-          schema:
-            type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/background_tasks:
-    parameters: []
-    get:
-      summary: get background tasks status
-      parameters:
-        - name: fetch_single_entity
+          schema: { type: string }
+        - name: limit
           in: query
           required: false
-          example: 'true'
+          description: Maximum number of items to return
           schema:
-            type: boolean
-        - name: fields
-          in: query
-          required: false
-          example: >-
-            creation_time,client_lock_stamp,has_attachments,attachments,version_stamp,author,end_time,workspace_id,result,start_time,followed_by_me,app_key,task_type,last_modified,max_wait_time,status
-          schema:
-            type: string
+            type: integer
+            minimum: 1
+            default: 2000
         - name: offset
           in: query
           required: false
-          example: '0'
+          description: Number of items to skip before starting to collect the result set
           schema:
             type: integer
-        - name: query
+            minimum: 0
+            default: 0          
+        - name: order_by
           in: query
+          description: Field to sort by (e.g., id, name)
           required: false
-          example: '"(id=''85011'')"'
           schema:
             type: string
+      responses:
+        '200': { description: Workspaces retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/business_rules:
+    get:
+      tags:
+        - "business_rules"
+      summary: Get all business rules
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
+          schema: { type: string }
+        - name: HPECLIENTTYPE
+          in: header
+          required: false
+          example: IT_PRIVATE
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
+      responses:
+        '200': { description: Business rules retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/external-entity-actions:
+    get:
+      tags:
+        - "external-actions"
+      summary: Get all external-entity-actions
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          required: false
+          schema: { type: string }
+        - name: HPECLIENTTYPE
+          in: header
+          required: false
+          example: IT_PRIVATE
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
+          schema:
+            type: string
+      responses:
+        '200': { description: External entity actions retrieved successfully }
+
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/background_tasks:
+    get:
+      tags:
+        - "export | import"
+      summary: Get background tasks status
+      parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: fetch_single_entity
+          in: query
+          required: false
+          example: true
+          schema: { type: boolean }
+        - name: fields
+          in: query
+          required: false
+          example: creation_time,client_lock_stamp,has_attachments,attachments,version_stamp,author,end_time,workspace_id,result,start_time,followed_by_me,app_key,task_type,last_modified,max_wait_time,status
+          schema: { type: string }
+        - name: query
+          in: query
+          required: false
+          example: "(id='85011')"
+          schema: { type: string }
+        - name: ALM-OCTANE-TECH-PREVIEW
+          in: header
+          required: false
+          example: true
+          schema: { type: string }
         - name: hpeclienttype
           in: header
           required: false
           example: IT_PRIVATE
+          schema: { type: string }
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of items to return
+          schema:
+            type: integer
+            minimum: 1
+            default: 2000
+        - name: offset
+          in: query
+          required: false
+          description: Number of items to skip before starting to collect the result set
+          schema:
+            type: integer
+            minimum: 0
+            default: 0          
+        - name: order_by
+          in: query
+          description: Field to sort by (e.g., id, name)
+          required: false
           schema:
             type: string
-      responses: {}
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                document_type:
-                  type: string
-                timezone:
-                  type: string
-                  format: uri
-                file_name:
-                  type: string
-                report_entries:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      entity_name:
-                        type: string
-                      subtypes:
-                        type: array
-                        items:
-                          type: string
-                      fields:
-                        type: array
-                        items:
-                          type: string
-                      include_attachments:
-                        type: string
-                      order_by:
-                        nullable: true
-                      filter:
-                        type: string
-                purpose:
-                  type: string
-                is_export_for_create_import:
-                  type: boolean
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/attachments/123009:
-    parameters: []
+      responses:
+        '200': { description: Background tasks retrieved successfully }
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/attachments/{attachment_id}:
     get:
-      summary: get excel file for export
+      tags:
+        - "export | import"
+      summary: Get Excel file for export
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: attachment_id
+          in: path
+          required: true
+          schema: { type: integer }          
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
+          schema: { type: string }
         - name: Content-Type
           in: header
           required: false
           example: application/octet-stream
-          schema:
-            type: string
-      responses: {}
-  /api/shared_spaces/{{shared_space}}/workspaces/{{workspace}}/attachments/3002/Requirement_AK_DEMO.pdf:
-    parameters: []
+          schema: { type: string }
+      responses:
+        '200': { description: Excel file retrieved successfully }
+  /api/shared_spaces/{shared_space}/workspaces/{workspace}/attachments/{attachment_id}/{document_copy_name}:
     get:
-      summary: Export requirement as document Copy
+      tags:
+        - "export | import"
+      summary: Export requirement as document copy
       parameters:
+        - name: shared_space
+          in: path
+          required: true
+          schema: { type: string }
+        - name: workspace
+          in: path
+          required: true
+          schema: { type: string }
+        - name: attachment_id
+          in: path
+          required: true
+          schema: { type: integer }  
+        - name: document_copy_name
+          in: path
+          required: true
+          example: Requirement_AK_DEMO.pdf
+          schema: { type: string }            
         - name: ALM-OCTANE-TECH-PREVIEW
           in: header
           required: false
-          example: '{{tech_preview_flag}}'
-          schema:
-            type: string
+          example: true
+          schema: { type: string }
         - name: hpeclienttype
           in: header
           required: false
           example: IT_PRIVATE
-          schema:
-            type: string
-      responses: {}
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
+          schema: { type: string }
+      responses:
+        '200':
+          description: Requirement document exported successfully
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+components:
+  schemas: {}
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+
+tags:
+  - name: authentication
+  - name: backlog Items
+  - name: tests
+  - name: test_suites
+  - name: test_versions
+  - name: application_modules
+  - name: management
+  - name: runs
+  - name: pipelines
+  - name: testresults
+  - name: vulnerabilities
+  - name: requirements
+  - name: comments
+  - name: attachments
+  - name: environments
+  - name: roles
+  - name: users
+  - name: list_nodes
+  - name: history
+  - name: workspaces
+  - name: business_rules
+  - name: external-actions
+  - name: "export | import"
+
