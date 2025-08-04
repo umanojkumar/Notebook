@@ -1,325 +1,5438 @@
 {
-  "openapi": "3.0.3",
+  "openapi": "3.0.0",
   "info": {
-    "title": "Octane Academy",
-    "description": "",
+    "title": "Octane REST API Collections",
     "version": "1.0.0",
-    "contact": {}
+    "description": ""
   },
   "servers": [
     {
-      "url": "https://postman-echo.com"
+      "url": "https://almoctane-ams.saas.microfocus.com"
     }
   ],
   "paths": {
-    "/": {
+    "/authentication/sign_in": {
+      "parameters": [],
       "post": {
         "tags": [
-          "export | import"
+          "authentication"
         ],
-        "summary": "export defects into excel",
-        "description": "",
-        "operationId": "post",
-        "parameters": [
+        "summary": "Sign in with client_id and secret",
+        "security": [
           {
-            "name": "ALM-OCTANE-TECH-PREVIEW",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            },
-            "example": "{{tech_preview_flag}}"
-          },
-          {
-            "name": "hpeclienttype",
-            "in": "header",
-            "schema": {
-              "type": "string"
-            },
-            "example": "IT_PRIVATE"
+            "basicAuth": []
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "example": {}
-                }
-              }
-            }
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         },
         "requestBody": {
-          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
-                "example": {
-                  "document_type": "EXCEL",
-                  "timezone": "UTC+02:00",
-                  "file_name": "Octane_backlog.OctaneAcademy.defects",
-                  "report_entries": [
-                    {
-                      "entity_name": "work_item",
-                      "subtypes": [
-                        "defect"
-                      ],
-                      "fields": [
-                        "id",
-                        "has_attachments",
-                        "name",
-                        "description",
-                        "priority",
-                        "severity",
-                        "phase",
-                        "detected_by",
-                        "detected_in_release",
-                        "release",
-                        "owner",
-                        "last_modified",
-                        "milestone",
-                        "taxonomies",
-                        "subtype"
-                      ],
-                      "include_attachments": "NO_ATTACHMENTS",
-                      "order_by": null,
-                      "filter": "\"(id IN {{defectIds_export}})\""
-                    }
-                  ],
-                  "purpose": "EXPORT_FOR_IMPORT",
-                  "is_export_for_create_import": false
+                "properties": {
+                  "client_id": {
+                    "type": "string"
+                  },
+                  "client_secret": {
+                    "type": "string"
+                  }
                 }
               }
             }
           }
         }
-      },
-      "delete": {
+      }
+    },
+    "/authentication/sign_out": {
+      "parameters": [],
+      "post": {
         "tags": [
-          "requirement_documents"
+          "authentication"
         ],
-        "summary": "Delete multiple requirement documents by given condition (greater than date)",
-        "description": "",
-        "operationId": "delete",
+        "summary": "Sign-out",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/epics": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all epics",
         "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of epics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/features": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all features",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of features",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/stories": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all user stories",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "test",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of user stories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/quality_stories": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all quality stories",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of quality stories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/defects": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all defects",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of defects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "severity": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/defects/{defect_id}": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get defect by ID",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "defect_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "analysis_udf",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Defect retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "severity": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "analysis_udf": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Defect not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/tasks": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all tasks",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of tasks",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "owner": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/work_items": {
+      "get": {
+        "tags": [
+          "backlog Items"
+        ],
+        "summary": "Get all work items by subtype",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "subtype, name, phase",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Work items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "phase": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/tests/{manual_test_id}/script": {
+      "get": {
+        "tags": [
+          "tests"
+        ],
+        "summary": "Get test script",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "manual_test_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test script retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "script": {
+                      "type": "string"
+                    },
+                    "last_modified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Test not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/manual_tests": {
+      "get": {
+        "tags": [
+          "tests"
+        ],
+        "summary": "Get all manual tests",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,description,covered_requirement",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Manual tests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "covered_requirement": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/tests/{gherkin_test_id}/script": {
+      "get": {
+        "tags": [
+          "tests"
+        ],
+        "summary": "Get Gherkin test script",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "gherkin_test_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gherkin test script retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "script": {
+                      "type": "string"
+                    },
+                    "last_modified": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Test not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/gherkin_tests": {
+      "get": {
+        "tags": [
+          "tests"
+        ],
+        "summary": "Get all Gherkin tests",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Gherkin tests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/automated_tests": {
+      "get": {
+        "tags": [
+          "tests"
+        ],
+        "summary": "Get all automated tests",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Automated tests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/test_suite_link_to_tests": {
+      "get": {
+        "tags": [
+          "test_suites"
+        ],
+        "summary": "Get all tests within a test suite",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "test_suite,test",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "query",
             "in": "query",
+            "required": false,
+            "example": "\"test_suite EQ {id EQ 12345}\"",
             "schema": {
               "type": "string"
-            },
-            "example": "\"creation_time GT^2020-12-01T00:00:00Z^\""
+            }
           },
           {
             "name": "ALM-OCTANE-TECH-PREVIEW",
             "in": "header",
+            "required": false,
+            "example": true,
             "schema": {
               "type": "string"
-            },
-            "example": "{{tech_preview_flag}}"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Tests linked to the test suite retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "example": {}
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "test_suite": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "test": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
-      },
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/test_suites": {
       "get": {
         "tags": [
-          "export | import"
+          "test_suites"
         ],
-        "summary": "Export requirement as document Copy",
-        "description": "",
-        "operationId": "get",
+        "summary": "Get all test suites",
         "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,description",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "ALM-OCTANE-TECH-PREVIEW",
             "in": "header",
+            "required": false,
+            "example": true,
             "schema": {
               "type": "string"
-            },
-            "example": "{{tech_preview_flag}}"
+            }
           },
           {
-            "name": "hpeclienttype",
-            "in": "header",
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
             "schema": {
               "type": "string"
-            },
-            "example": "IT_PRIVATE"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Test suites retrieved successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "example": {}
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
         }
-      },
-      "put": {
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/test_versions": {
+      "get": {
         "tags": [
-          "external-actions"
+          "test_versions"
         ],
-        "summary": "Add external-entity-actions",
-        "description": "",
-        "operationId": "put",
+        "summary": "Get all test versions with all system fields",
         "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "client_lock_stamp,comment,creation_time,creator,id,is_external,last_modified,name,releases,script,test,version_stamp",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "ALM-OCTANE-TECH-PREVIEW",
             "in": "header",
+            "required": false,
+            "example": true,
             "schema": {
               "type": "string"
-            },
-            "example": "{{tech_preview_flag}}"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test versions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "version_stamp": {
+                        "type": "integer"
+                      },
+                      "creation_time": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "last_modified": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "creator": {
+                        "type": "string"
+                      },
+                      "comment": {
+                        "type": "string"
+                      },
+                      "client_lock_stamp": {
+                        "type": "integer"
+                      },
+                      "is_external": {
+                        "type": "boolean"
+                      },
+                      "releases": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "script": {
+                        "type": "string"
+                      },
+                      "test": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/tests": {
+      "get": {
+        "tags": [
+          "tests"
+        ],
+        "summary": "Get all tests",
+        "description": "Retrieve all test entities from the specified workspace within a shared space. Supports optional field selection and tech preview features.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of fields to include in the response",
+            "example": "subtype,name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of tests",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "subtype": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/application_modules": {
+      "get": {
+        "tags": [
+          "application_modules"
+        ],
+        "summary": "Get application modules filtered by parent name",
+        "description": "Retrieve application modules from the specified workspace, optionally filtered by parent name using a query expression.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "description": "Query expression to filter modules by parent name",
+            "example": "\"parent EQ {name EQ ^Procure to Pay *^}\"",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of fields to include in the response",
+            "example": "name,description",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of application modules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "parent": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/releases": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get all releases",
+        "description": "Retrieve all release entities from the specified workspace within a shared space.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of releases",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "start_date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "end_date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/sprints": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get all sprints",
+        "description": "Retrieve all sprint entities from the specified workspace within a shared space.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "description": "Optional tech preview flag",
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of sprints",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "start_date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "end_date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "release": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/milestones": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get all milestones",
+        "description": "Retrieve all milestone entities from the specified workspace within a shared space.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "description": "Optional tech preview flag",
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of milestones",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "date": {
+                        "type": "string",
+                        "format": "date"
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/planning_info": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get all objectives",
+        "description": "Retrieve all planning objectives from the specified workspace within a shared space.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "description": "Optional tech preview flag",
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of planning objectives",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "owner": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/programs": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get all programs",
+        "description": "Retrieve all program entities from the specified workspace within a shared space. Supports optional field selection and tech preview features.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "description": "Comma-separated list of fields to include in the response",
+            "example": "client_lock_stamp,creation_time,id,last_modified,name,version_stamp",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "description": "Optional tech preview flag",
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of programs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "creation_time": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "last_modified": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "client_lock_stamp": {
+                        "type": "integer"
+                      },
+                      "version_stamp": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Workspace or shared space not found"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/processes": {
+      "get": {
+        "tags": [
+          "management"
+        ],
+        "summary": "Get all processes",
+        "description": "Retrieve all process entities from the specified workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "description": "ID of the shared space",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "description": "ID of the workspace",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "description": "Optional tech preview flag",
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "HPECLIENTTYPE",
             "in": "header",
+            "required": false,
+            "description": "Client type identifier",
+            "example": "HPE_MQM_UI",
             "schema": {
               "type": "string"
-            },
-            "example": "IT_PRIVATE"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "A list of processes",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "example": {}
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    }
+                  }
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
           }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "example": {
-                  "data": [
-                    {
-                      "name": "alieninvasion",
-                      "title": "Easter Alien Invasion",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "system",
-                      "url": "http://cykod.github.io/AlienInvasion/",
-                      "single_entity": false
-                    },
-                    {
-                      "name": "duckhunt",
-                      "title": "Easter Duck Hunt",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "expert-star",
-                      "url": "https://duckhuntjs.com/",
-                      "single_entity": false
-                    },
-                    {
-                      "name": "ski",
-                      "title": "Easter Ski",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "merge",
-                      "url": "http://basicallydan.github.io/skifree.js/",
-                      "single_entity": false
-                    },
-                    {
-                      "name": "snake",
-                      "title": "Easter Coffee Snake",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "refresh",
-                      "url": "http://dommmel.github.io/coffee-snake/",
-                      "single_entity": false
-                    },
-                    {
-                      "name": "sorades",
-                      "title": "Easter Sorades 13K",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "check",
-                      "url": "http://maettig.com/code/canvas/starship-sorades-13k/",
-                      "single_entity": false
-                    },
-                    {
-                      "name": "survivor",
-                      "title": "Easter Survivor",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "children",
-                      "url": "http://www.schillmania.com/survivor/",
-                      "single_entity": false
-                    },
-                    {
-                      "name": "url",
-                      "title": "open URL",
-                      "entity_type": [
-                        "defect"
-                      ],
-                      "views": [
-                        "list",
-                        "details"
-                      ],
-                      "icon": "system",
-                      "url": "http://{entity.jira_key_udf}",
-                      "single_entity": true
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/suite_run": {
+      "get": {
+        "tags": [
+          "runs"
+        ],
+        "summary": "Get all suite runs",
+        "description": "Retrieve all suite run entities from the specified workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of suite runs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "started": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
                     }
-                  ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/manual_runs": {
+      "get": {
+        "tags": [
+          "runs"
+        ],
+        "summary": "Get all manual runs",
+        "description": "Retrieve all manual test run entities from the specified workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of manual runs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "test_id": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/automated_runs": {
+      "get": {
+        "tags": [
+          "runs"
+        ],
+        "summary": "Get all automated runs",
+        "description": "Retrieve all automated test run entities from the specified workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of automated runs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "test_id": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/gherkin_automated_runs": {
+      "get": {
+        "tags": [
+          "runs"
+        ],
+        "summary": "Get all Gherkin automated runs",
+        "description": "Retrieve all Gherkin-based automated test runs from the specified workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of Gherkin automated runs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "feature": {
+                        "type": "string"
+                      },
+                      "status": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/run_steps": {
+      "get": {
+        "tags": [
+          "runs"
+        ],
+        "summary": "Get all run steps of a manual run",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "example": "\"run EQ {id EQ ^7005^}\"",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "description,result",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Run steps retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/runs": {
+      "get": {
+        "tags": [
+          "runs"
+        ],
+        "summary": "Get all runs",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Runs retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_servers": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get all CI servers",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CI servers retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_servers/configured": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get all connected CI servers",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connected CI servers retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/pipelines": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get all pipelines",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,author,creation_time,ci_server",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pipelines retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_jobs": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get CI job IDs",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HPECLIENTTYPE",
+            "in": "header",
+            "required": false,
+            "example": "HPE_MQM_UI",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CI jobs retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/ci_builds/{ci_build_id}": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get a single CI build",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ci_build_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name,pipeline_node,status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CI build retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/scm_commits": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get all SCM commits",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "example": "\"stories EQ {id EQ 6062}\"",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "ci_build",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SCM commits retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/scm_repositories/{scm_repository_id}": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get SCM repository by ID",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scm_repository_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HPECLIENTTYPE",
+            "in": "header",
+            "required": false,
+            "example": "HPE_MQM_UI",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SCM repository retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/scm_commits/{scm_commit_id}": {
+      "get": {
+        "tags": [
+          "pipelines"
+        ],
+        "summary": "Get single SCM commit",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "scm_commit_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HPECLIENTTYPE",
+            "in": "header",
+            "required": false,
+            "example": "HPE_MQM_UI",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SCM commit retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/test-results/{task_id}": {
+      "get": {
+        "tags": [
+          "testresults"
+        ],
+        "summary": "Get pushed test status usingg task id",
+        "description": "Retrieve the status of a specific pushed test result using task id.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "task_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test result status retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/issues": {
+      "get": {
+        "tags": [
+          "vulnerabilities"
+        ],
+        "summary": "Get all vulnerabilities",
+        "description": "Retrieve all vulnerability issues detected in the workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "line,state,id,severity,tool_name,package,remote_id,primary_location_full,analysis,commits,category",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hpeclienttype",
+            "in": "header",
+            "required": false,
+            "example": "HPE_MQM_UI",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vulnerabilities retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/requirement_folders": {
+      "get": {
+        "tags": [
+          "requirements"
+        ],
+        "summary": "Get all requirement folders",
+        "description": "Retrieve all requirement folders from the workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requirement folders retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/requirement_documents": {
+      "get": {
+        "tags": [
+          "requirements"
+        ],
+        "summary": "Get all requirement documents",
+        "description": "Retrieve all requirement documents from the workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requirement documents retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/requirements": {
+      "get": {
+        "tags": [
+          "requirements"
+        ],
+        "summary": "Get all requirements (including requirement_root)",
+        "description": "Retrieve all requirements, including root-level requirements.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requirements retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/comments": {
+      "get": {
+        "tags": [
+          "comments"
+        ],
+        "summary": "Get all comments on all entities",
+        "description": "Retrieve all comments associated with entities in the workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "owner_work_item,text,author",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Comments retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/attachments": {
+      "get": {
+        "tags": [
+          "attachments"
+        ],
+        "summary": "Get all attachments",
+        "description": "Retrieve all attachments from the workspace.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachments retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/taxonomy_nodes": {
+      "get": {
+        "tags": [
+          "environments"
+        ],
+        "summary": "Read all Taxonomy Nodes",
+        "description": "Retrieve all taxonomy nodes used for classification and grouping.",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "activity_level,user_activation_status,author,category,client_lock_stamp,creation_time,id,last_modified,name,subtype,version_stamp",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Taxonomy nodes retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/roles": {
+      "get": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Get all roles",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Roles retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspace_roles": {
+      "get": {
+        "tags": [
+          "roles"
+        ],
+        "summary": "Get all workspace roles",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "role",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workspace roles retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/workspace_users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get all workspace users",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workspace users retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get all shared space users",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "full_name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Shared space users retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/list_nodes": {
+      "get": {
+        "tags": [
+          "list_nodes"
+        ],
+        "summary": "Get all items from list_nodes",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List nodes retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/history_logs": {
+      "get": {
+        "tags": [
+          "history"
+        ],
+        "summary": "Get all items from history_logs",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "id,user_name,timestamp,user_id,action,entity_type,entity_id,entity_physical_id,session_id,request_id,change_set",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "History logs retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces": {
+      "get": {
+        "tags": [
+          "workspaces"
+        ],
+        "summary": "Get all workspaces",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workspaces retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/business_rules": {
+      "get": {
+        "tags": [
+          "business_rules"
+        ],
+        "summary": "Get all business rules",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HPECLIENTTYPE",
+            "in": "header",
+            "required": false,
+            "example": "IT_PRIVATE",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Business rules retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/external-entity-actions": {
+      "get": {
+        "tags": [
+          "external-actions"
+        ],
+        "summary": "Get all external-entity-actions",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HPECLIENTTYPE",
+            "in": "header",
+            "required": false,
+            "example": "IT_PRIVATE",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "External entity actions retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/background_tasks": {
+      "get": {
+        "tags": [
+          "export | import"
+        ],
+        "summary": "Get background tasks status",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fetch_single_entity",
+            "in": "query",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "example": "creation_time,client_lock_stamp,has_attachments,attachments,version_stamp,author,end_time,workspace_id,result,start_time,followed_by_me,app_key,task_type,last_modified,max_wait_time,status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "example": "(id='85011')",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hpeclienttype",
+            "in": "header",
+            "required": false,
+            "example": "IT_PRIVATE",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Maximum number of items to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 2000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "description": "Number of items to skip before starting to collect the result set",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            }
+          },
+          {
+            "name": "order_by",
+            "in": "query",
+            "description": "Field to sort by (e.g., id, name)",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Background tasks retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/attachments/{attachment_id}": {
+      "get": {
+        "tags": [
+          "export | import"
+        ],
+        "summary": "Get Excel file for export",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attachment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "example": "application/octet-stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Excel file retrieved successfully"
+          }
+        }
+      }
+    },
+    "/api/shared_spaces/{shared_space}/workspaces/{workspace}/attachments/{attachment_id}/{document_copy_name}": {
+      "get": {
+        "tags": [
+          "export | import"
+        ],
+        "summary": "Export requirement as document copy",
+        "parameters": [
+          {
+            "name": "shared_space",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "workspace",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attachment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "document_copy_name",
+            "in": "path",
+            "required": true,
+            "example": "Requirement_AK_DEMO.pdf",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ALM-OCTANE-TECH-PREVIEW",
+            "in": "header",
+            "required": false,
+            "example": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hpeclienttype",
+            "in": "header",
+            "required": false,
+            "example": "IT_PRIVATE",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requirement document exported successfully",
+            "content": {
+              "application/pdf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }
@@ -334,213 +5447,78 @@
       "basicAuth": {
         "type": "http",
         "scheme": "basic"
-      },
-      "digestAuth": {
-        "type": "http",
-        "scheme": "digest"
       }
     }
   },
   "tags": [
     {
-      "name": "authentication",
-      "description": ""
+      "name": "authentication"
     },
     {
-      "name": "backlog Items",
-      "description": ""
+      "name": "backlog Items"
     },
     {
-      "name": "epics",
-      "description": ""
+      "name": "tests"
     },
     {
-      "name": "features",
-      "description": ""
+      "name": "test_suites"
     },
     {
-      "name": "stories",
-      "description": ""
+      "name": "test_versions"
     },
     {
-      "name": "quality_stories",
-      "description": ""
+      "name": "application_modules"
     },
     {
-      "name": "defects",
-      "description": ""
+      "name": "management"
     },
     {
-      "name": "tasks",
-      "description": ""
+      "name": "runs"
     },
     {
-      "name": "tests",
-      "description": ""
+      "name": "pipelines"
     },
     {
-      "name": "manual_tests",
-      "description": ""
+      "name": "testresults"
     },
     {
-      "name": "script",
-      "description": ""
+      "name": "vulnerabilities"
     },
     {
-      "name": "gherkin_tests",
-      "description": ""
+      "name": "requirements"
     },
     {
-      "name": "automated_tests",
-      "description": ""
+      "name": "comments"
     },
     {
-      "name": "test_suites",
-      "description": ""
+      "name": "attachments"
     },
     {
-      "name": "test_suite_link_to_tests",
-      "description": ""
+      "name": "environments"
     },
     {
-      "name": "test_versions",
-      "description": ""
+      "name": "roles"
     },
     {
-      "name": "application_modules",
-      "description": ""
+      "name": "users"
     },
     {
-      "name": "management",
-      "description": ""
+      "name": "list_nodes"
     },
     {
-      "name": "releases",
-      "description": ""
+      "name": "history"
     },
     {
-      "name": "sprints",
-      "description": ""
+      "name": "workspaces"
     },
     {
-      "name": "milestones",
-      "description": ""
+      "name": "business_rules"
     },
     {
-      "name": "objectives",
-      "description": ""
+      "name": "external-actions"
     },
     {
-      "name": "programs",
-      "description": ""
-    },
-    {
-      "name": "processes",
-      "description": ""
-    },
-    {
-      "name": "runs",
-      "description": ""
-    },
-    {
-      "name": "suite_runs",
-      "description": ""
-    },
-    {
-      "name": "manual_runs",
-      "description": ""
-    },
-    {
-      "name": "automated_runs",
-      "description": ""
-    },
-    {
-      "name": "gherkin_automated_runs",
-      "description": ""
-    },
-    {
-      "name": "run_steps",
-      "description": ""
-    },
-    {
-      "name": "pipelines",
-      "description": ""
-    },
-    {
-      "name": "ci_servers",
-      "description": ""
-    },
-    {
-      "name": "builds",
-      "description": ""
-    },
-    {
-      "name": "scm",
-      "description": ""
-    },
-    {
-      "name": "testresults",
-      "description": ""
-    },
-    {
-      "name": "vulnerabilities",
-      "description": ""
-    },
-    {
-      "name": "requirements",
-      "description": ""
-    },
-    {
-      "name": "requirement_folders",
-      "description": ""
-    },
-    {
-      "name": "requirement_documents",
-      "description": ""
-    },
-    {
-      "name": "comments",
-      "description": ""
-    },
-    {
-      "name": "attachments",
-      "description": ""
-    },
-    {
-      "name": "environments",
-      "description": ""
-    },
-    {
-      "name": "roles",
-      "description": ""
-    },
-    {
-      "name": "users",
-      "description": ""
-    },
-    {
-      "name": "list_nodes",
-      "description": ""
-    },
-    {
-      "name": "history",
-      "description": ""
-    },
-    {
-      "name": "workspaces",
-      "description": ""
-    },
-    {
-      "name": "business_rules",
-      "description": ""
-    },
-    {
-      "name": "external-actions",
-      "description": ""
-    },
-    {
-      "name": "export | import",
-      "description": ""
+      "name": "export | import"
     }
   ]
 }
